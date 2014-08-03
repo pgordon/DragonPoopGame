@@ -1,0 +1,16 @@
+H:\Piper\CSharp\DragonPoop\DragonPoop\bin\Debug\DragonPoop.exe.config
+H:\Piper\CSharp\DragonPoop\DragonPoop\bin\Debug\DragonPoop.exe
+H:\Piper\CSharp\DragonPoop\DragonPoop\bin\Debug\DragonPoop.pdb
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\DragonPoop.csprojResolveAssemblyReference.cache
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\MainWindow.baml
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\MainWindow.g.cs
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\App.g.cs
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\DragonPoop_MarkupCompile.cache
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\DragonPoop.g.resources
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\DragonPoop.Properties.Resources.resources
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\DragonPoop.csproj.GenerateResource.Cache
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\DragonPoop.exe
+H:\Piper\CSharp\DragonPoop\DragonPoop\obj\Debug\DragonPoop.pdb
+H:\Piper\CSharp\DragonPoopGame\DragonPoop\bin\Debug\DragonPoop.exe.config
+H:\Piper\CSharp\DragonPoopGame\DragonPoop\obj\Debug\DragonPoop.exe
+H:\Piper\CSharp\DragonPoopGame\DragonPoop\obj\Debug\DragonPoop.pdb
