@@ -71,6 +71,9 @@ public class PlayerRocket {
      * Image of the rocket in air.
      */
     private BufferedImage rocketImg;
+    private BufferedImage rocketImgDown;
+    private BufferedImage rocketImgLeft;
+    private BufferedImage rocketImgRight;
     /**
      * Image of the rocket when landed.
      */
@@ -83,6 +86,9 @@ public class PlayerRocket {
      * Image of the rocket fire.
      */
     private BufferedImage rocketFireImg;
+    private BufferedImage rocketFireImgDown;
+    private BufferedImage rocketFireImgRight;
+    private BufferedImage rocketFireImgLeft;
 
     private Font coordinateFont;
     
@@ -127,6 +133,13 @@ public class PlayerRocket {
             rocketImg = ImageIO.read(rocketImgUrl);
             rocketImgWidth = rocketImg.getWidth();
             rocketImgHeight = rocketImg.getHeight();
+
+            URL rocketImgUrlDir = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_down.png");
+            rocketImgDown = ImageIO.read(rocketImgUrlDir);
+            rocketImgUrlDir = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_left.png");
+            rocketImgLeft = ImageIO.read(rocketImgUrlDir);
+            rocketImgUrlDir = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_right.png");
+            rocketImgRight = ImageIO.read(rocketImgUrlDir);
             
             URL rocketLandedImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_landed.png");
             rocketLandedImg = ImageIO.read(rocketLandedImgUrl);
@@ -136,6 +149,13 @@ public class PlayerRocket {
             
             URL rocketFireImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_fire.png");
             rocketFireImg = ImageIO.read(rocketFireImgUrl);
+
+            URL rocketFireImgUrlDir = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_fire_down.png");
+            rocketFireImgDown = ImageIO.read(rocketFireImgUrlDir);
+            rocketFireImgUrlDir = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_fire_left.png");
+            rocketFireImgLeft = ImageIO.read(rocketFireImgUrlDir);
+            rocketFireImgUrlDir = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_fire_right.png");
+            rocketFireImgRight = ImageIO.read(rocketFireImgUrlDir);
         }
         catch (IOException ex) {
             Logger.getLogger(PlayerRocket.class.getName()).log(Level.SEVERE, null, ex);
@@ -157,7 +177,10 @@ public class PlayerRocket {
         speedY = 0;
     }
     
-    
+    private enum Direction{
+        UP, DOWN, LEFT, RIGHT
+    }
+    private Direction rocketFacing = Direction.UP;
     /**
      * Here we move the rocket.
      */
@@ -170,35 +193,43 @@ public class PlayerRocket {
         {
             speedY = -speedAccelerating;
             speedX = 0;
+            rocketFacing = Direction.UP;
         }
         // Calculating speed for moving up or down.
         else if(Canvas.keyboardKeyState(KeyEvent.VK_S) ||Canvas.keyboardKeyState(KeyEvent.VK_DOWN))
         {
              speedY = speedAccelerating;
              speedX = 0;
+             rocketFacing = Direction.DOWN;
          }           
         // Calculating speed for moving or stopping to the left.
         else if(Canvas.keyboardKeyState(KeyEvent.VK_A)||Canvas.keyboardKeyState(KeyEvent.VK_LEFT))
         {
             speedX = -speedAccelerating;
             speedY = 0;
+            rocketFacing = Direction.LEFT;
         }
         // Calculating speed for moving or stopping to the right.
         else if(Canvas.keyboardKeyState(KeyEvent.VK_D)||Canvas.keyboardKeyState(KeyEvent.VK_RIGHT))
         {
             speedX = speedAccelerating;
             speedY = 0;
+            rocketFacing = Direction.RIGHT;
         }
         // Moves the rocket.
         x += speedX;
         y += speedY;
     }
     
+    private BufferedImage rocketPlaceholder;
+    private BufferedImage rocketFirePlaceholder;
+    private int x_fire = 0;
+    private int y_fire = 0;
+
     public void Draw(Graphics2D g2d)
     {
         g2d.setColor(Color.white);
         g2d.setFont(coordinateFont); 
-        g2d.drawString("Rocket coordinates: " + x + " : " + y, 15, 35);
         
         // If the rocket is landed.
         if(landed)
@@ -213,10 +244,40 @@ public class PlayerRocket {
         // If the rocket is still in the space.
         else
         {
-            // If player hold down a W key we draw rocket fire.
+            switch(rocketFacing)
+            {
+                case UP:
+                    rocketPlaceholder = rocketImg;
+                    rocketFirePlaceholder = rocketFireImg;
+                    x_fire = x + 12;
+                    y_fire = y + 66;
+                    break;
+                case DOWN:
+                    rocketPlaceholder = rocketImgDown;
+                    rocketFirePlaceholder = rocketFireImgDown;
+                    x_fire = x + 12;
+                    y_fire = y - 66;
+                    break;
+                case LEFT:
+                    rocketPlaceholder = rocketImgLeft;
+                    rocketFirePlaceholder = rocketFireImgLeft;
+                    x_fire = x + 66;
+                    y_fire = y + 12;
+                    break;
+                case RIGHT:
+                    rocketPlaceholder = rocketImgRight;
+                    rocketFirePlaceholder = rocketFireImgRight;
+                    x_fire = x - 66;
+                    y_fire = y + 12;
+                    break;
+                default:
+                    throw new RuntimeException("unknown case for rocket facing direction");
+            }
+                        // draw rocket fire 
             if(Canvas.keyboardKeyState(KeyEvent.VK_SPACE))
-                g2d.drawImage(rocketFireImg, x + 12, y + 66, null);
-            g2d.drawImage(rocketImg, x, y, null);
+                g2d.drawImage(rocketFirePlaceholder, x_fire, y_fire, null);
+
+            g2d.drawImage(rocketPlaceholder, x, y, null);
         }
     }
     
