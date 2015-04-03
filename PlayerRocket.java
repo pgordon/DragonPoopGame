@@ -178,43 +178,74 @@ public class PlayerRocket {
     }
     
     private enum Direction{
-        UP, DOWN, LEFT, RIGHT
+        UP, DOWN, LEFT, RIGHT, NONE
     }
-    private Direction rocketFacing = Direction.UP;
+    private Direction rocketFacing = Direction.NONE;
     /**
      * Here we move the rocket.
      */
     public void Update()
     {
-        //speedX = 0;
-        //speedY = 0;
+        
+        //hitting the walls kills you
+        if(x <= 0 || y <= 0 || x + rocketImgWidth >= Framework.frameWidth || y + rocketImgHeight >= Framework.frameHeight)
+            crashed = true;
+
         // Calculating speed for moving up or down.
         if(Canvas.keyboardKeyState(KeyEvent.VK_W) || Canvas.keyboardKeyState(KeyEvent.VK_UP))
         {
-            speedY = -speedAccelerating;
-            speedX = 0;
-            rocketFacing = Direction.UP;
+            if(rocketFacing == Direction.DOWN)
+            {
+                //TODO: a sound
+            }
+            else
+            {
+                speedY = -speedAccelerating;
+                speedX = 0;
+                rocketFacing = Direction.UP;
+            }
         }
         // Calculating speed for moving up or down.
         else if(Canvas.keyboardKeyState(KeyEvent.VK_S) ||Canvas.keyboardKeyState(KeyEvent.VK_DOWN))
         {
-             speedY = speedAccelerating;
-             speedX = 0;
-             rocketFacing = Direction.DOWN;
+            if(rocketFacing == Direction.UP)
+            {
+                //TODO: a sound
+            }
+            else
+            {
+                 speedY = speedAccelerating;
+                 speedX = 0;
+                 rocketFacing = Direction.DOWN;
+            }
          }           
         // Calculating speed for moving or stopping to the left.
         else if(Canvas.keyboardKeyState(KeyEvent.VK_A)||Canvas.keyboardKeyState(KeyEvent.VK_LEFT))
         {
-            speedX = -speedAccelerating;
-            speedY = 0;
-            rocketFacing = Direction.LEFT;
+            if(rocketFacing == Direction.RIGHT)
+            {
+                //TODO: a sound
+            }
+            else
+            {
+                speedX = -speedAccelerating;
+                speedY = 0;
+                rocketFacing = Direction.LEFT;
+            }
         }
         // Calculating speed for moving or stopping to the right.
         else if(Canvas.keyboardKeyState(KeyEvent.VK_D)||Canvas.keyboardKeyState(KeyEvent.VK_RIGHT))
         {
-            speedX = speedAccelerating;
-            speedY = 0;
-            rocketFacing = Direction.RIGHT;
+            if(rocketFacing == Direction.LEFT)
+            {
+                //TODO: a sound
+            }
+            else
+            {
+                speedX = speedAccelerating;
+                speedY = 0;
+                rocketFacing = Direction.RIGHT;
+            }
         }
         // Moves the rocket.
         x += speedX;
