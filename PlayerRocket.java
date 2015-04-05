@@ -186,11 +186,6 @@ public class PlayerRocket {
      */
     public void Update()
     {
-        
-        //hitting the walls kills you
-        if(x <= 0 || y <= 0 || x + rocketImgWidth >= Framework.frameWidth || y + rocketImgHeight >= Framework.frameHeight)
-            crashed = true;
-
         // Calculating speed for moving up or down.
         if(Canvas.keyboardKeyState(KeyEvent.VK_W) || Canvas.keyboardKeyState(KeyEvent.VK_UP))
         {
@@ -301,10 +296,14 @@ public class PlayerRocket {
                     x_fire = x - 66;
                     y_fire = y + 12;
                     break;
-                default:
-                    throw new RuntimeException("unknown case for rocket facing direction");
+                default: //case NONE
+                    //player hasn't started moving yet
+                    rocketPlaceholder = rocketImg;
+                    rocketFirePlaceholder = rocketFireImg;
+                    x_fire = x + 12;
+                    y_fire = y + 66;
             }
-                        // draw rocket fire 
+             // draw rocket fire 
             if(Canvas.keyboardKeyState(KeyEvent.VK_SPACE))
                 g2d.drawImage(rocketFirePlaceholder, x_fire, y_fire, null);
 

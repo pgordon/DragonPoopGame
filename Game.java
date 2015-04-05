@@ -111,22 +111,23 @@ public class Game {
         playerRocket.Update();
         
         // Checks where the player rocket is. Is it still in the space or is it landed or crashed?
-        // First we check bottom y coordinate of the rocket if is it near the landing area.
-        if(playerRocket.y + playerRocket.rocketImgHeight - 10 > landingArea.y)
+        //hitting the walls kills you; leaving in landing area behaviour to save or exit game
+        if(playerRocket.x <= 0 || playerRocket.y <= 0 || 
+            playerRocket.x + playerRocket.rocketImgWidth >= Framework.frameWidth || 
+            playerRocket.y + playerRocket.rocketImgHeight >= Framework.frameHeight)
+        {    
+            playerRocket.crashed = true;
+            Framework.gameState = Framework.GameState.GAMEOVER;
+        }
+        else if(playerRocket.y + playerRocket.rocketImgHeight - 10 > landingArea.y)
         {
             // Here we check if the rocket is over landing area.
-            if((playerRocket.x > landingArea.x) && (playerRocket.x < landingArea.x + landingArea.landingAreaImgWidth - playerRocket.rocketImgWidth))
+            if((playerRocket.x > landingArea.x) && 
+                (playerRocket.x < landingArea.x + landingArea.landingAreaImgWidth - playerRocket.rocketImgWidth))
             {
-                // Here we check if the rocket speed isn't too high.
-                if(playerRocket.speedY <= playerRocket.topLandingSpeed)
-                    playerRocket.landed = true;
-                else
-                    playerRocket.crashed = true;
+                playerRocket.landed = true;
+                Framework.gameState = Framework.GameState.GAMEOVER;
             }
-            else
-                playerRocket.crashed = true;
-                
-            Framework.gameState = Framework.GameState.GAMEOVER;
         }
     }
     
