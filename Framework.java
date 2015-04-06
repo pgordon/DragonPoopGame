@@ -223,7 +223,7 @@ public class Framework extends Canvas {
             case MAIN_MENU:
                 g2d.drawImage(moonLanderMenuImg, 0, 0, frameWidth, frameHeight, null);
                 g2d.setColor(Color.white);
-                g2d.drawString("Use w a d keys to control the rocket.", frameWidth / 2 - 117, frameHeight / 2);
+                g2d.drawString("Use WASD or arrow keys to control the rocket.", frameWidth / 2 - 117, frameHeight / 2);
                 g2d.drawString("Press any key to start the game.", frameWidth / 2 - 100, frameHeight / 2 + 30);
                 g2d.drawString("WWW.GAMETUTORIAL.NET", 7, frameHeight - 5);
             break;
