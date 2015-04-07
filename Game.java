@@ -11,6 +11,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
+//TODO: move all audio into own class and file
+import javax.sound.sampled.*;
+
 /**
  * Actual game.
  * 
@@ -18,6 +21,34 @@ import javax.imageio.ImageIO;
  */
 
 public class Game {
+
+    //Resource re: playing sound in java: http://www3.ntu.edu.sg/home/ehchua/programming/java/J8c_PlayingSound.html
+    //and Clip in Oracle docs: http://docs.oracle.com/javase/7/docs/api/javax/sound/sampled/Clip.html
+    private void playSound(boolean play)
+    {
+        if(!play)
+            return;
+        try {
+             // Open an audio input stream.
+             //File soundFile = new File("/DragonPoopGame/resources/audio/meep.wav");
+             URL url = this.getClass().getResource("/DragonPoopGame/resources/audio/meep.wav");
+             AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+             // Get a sound clip resource.
+             Clip clip = AudioSystem.getClip();
+             // Open audio clip and load samples from the audio input stream.
+             clip.open(audioIn);
+             clip.start();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+    private void playSound(){ playSound(true); }
+    private boolean firstTimeThisGame = true;
+
 
     /**
      * The space rocket with which player will have to land.
@@ -96,6 +127,7 @@ public class Game {
     public void RestartGame()
     {
         playerRocket.ResetPlayer();
+        firstTimeThisGame = true;
     }
     
     
@@ -167,6 +199,9 @@ public class Game {
         }
         else
         {
+            playSound(firstTimeThisGame);
+            firstTimeThisGame=false;
+
             g2d.setColor(Color.red);
             g2d.drawString("You hit a wall!", Framework.frameWidth / 2 - 95, Framework.frameHeight / 3);
             g2d.drawImage(redBorderImg, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
