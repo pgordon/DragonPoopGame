@@ -42,7 +42,7 @@ public class Game {
     /**
      * Sound object
      */
-    private Audio wallHitSound;
+    private Audio audioInstance;
     
     private Font gameInstructionFont;
 
@@ -72,7 +72,7 @@ public class Game {
     {
         playerRocket = new PlayerRocket();
         landingArea  = new LandingArea();
-        wallHitSound = new Audio("/DragonPoopGame/resources/audio/meep.wav");
+        audioInstance = Audio.getInstance();
 
         gameInstructionFont = new Font("TimesRoman", Font.PLAIN, 12);
     }
@@ -102,7 +102,7 @@ public class Game {
     public void RestartGame()
     {
         playerRocket.ResetPlayer();
-        wallHitSound.GameRestarted();
+        audioInstance.GameRestarted();
     }
     
     
@@ -174,7 +174,7 @@ public class Game {
         }
         else
         {
-            wallHitSound.PlaySoundOnce();
+            audioInstance.PlaySoundOnce(Audio.SituationForSound.HIT_WALL);
 
             g2d.setColor(Color.red);
             g2d.drawString("You hit a wall!", Framework.frameWidth / 2 - 95, Framework.frameHeight / 3);

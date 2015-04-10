@@ -101,6 +101,7 @@ public class PlayerRocket {
      */
     public int rocketImgHeight;
     
+    private Audio audioInstance;
     
     public PlayerRocket()
     {
@@ -123,6 +124,8 @@ public class PlayerRocket {
         topLandingSpeed = 7;
 
         coordinateFont = new Font(Font.SANS_SERIF, Font.PLAIN, 30);
+
+        audioInstance = Audio.getInstance();
     }
     
     private void LoadContent()
@@ -305,7 +308,10 @@ public class PlayerRocket {
             }
              // draw rocket fire 
             if(Canvas.keyboardKeyState(KeyEvent.VK_SPACE))
+            {
                 g2d.drawImage(rocketFirePlaceholder, x_fire, y_fire, null);
+                audioInstance.PlaySound(Audio.SituationForSound.SHAT_ENEMY);
+            }
 
             g2d.drawImage(rocketPlaceholder, x, y, null);
         }
