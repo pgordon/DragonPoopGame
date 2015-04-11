@@ -34,6 +34,11 @@ public class LandingArea {
      * Width of landing area.
      */
     public int landingAreaImgWidth;
+
+    /**
+     * Height of landing area.
+     */
+    public int landingAreaImgHeight;
     
     
     public LandingArea()
@@ -58,6 +63,7 @@ public class LandingArea {
             URL landingAreaImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/landing_area.png");
             landingAreaImg = ImageIO.read(landingAreaImgUrl);
             landingAreaImgWidth = landingAreaImg.getWidth();
+            landingAreaImgHeight = landingAreaImg.getHeight();
         }
         catch (IOException ex) {
             Logger.getLogger(LandingArea.class.getName()).log(Level.SEVERE, null, ex);

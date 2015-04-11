@@ -91,6 +91,8 @@ public class PlayerRocket {
     private BufferedImage rocketFireImgLeft;
 
     private Font coordinateFont;
+
+    private int rocketStartingY;
     
     /**
      * Width of rocket.
@@ -100,6 +102,11 @@ public class PlayerRocket {
      * Height of rocket.
      */
     public int rocketImgHeight;
+
+    //Dimensions of fired projectile
+    private int rocketFireImgWidth;
+    private int rocketFireImgHeight;
+    private int overlapFractionInverted;
     
     private Audio audioInstance;
     
@@ -117,11 +124,16 @@ public class PlayerRocket {
     {
         random = new Random();
         
+        rocketStartingY = rocketImgHeight + 10;
+        
         ResetPlayer();
         
         speedAccelerating = 5;
         
         topLandingSpeed = 7;
+
+        // 1/overlapFractionInverted is multiplied by the projectile image height
+        overlapFractionInverted = 4; 
 
         coordinateFont = new Font(Font.SANS_SERIF, Font.PLAIN, 30);
 
@@ -152,6 +164,8 @@ public class PlayerRocket {
             
             URL rocketFireImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_fire.png");
             rocketFireImg = ImageIO.read(rocketFireImgUrl);
+            rocketFireImgWidth = rocketFireImg.getWidth();
+            rocketFireImgHeight = rocketFireImg.getHeight();
 
             URL rocketFireImgUrlDir = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_fire_down.png");
             rocketFireImgDown = ImageIO.read(rocketFireImgUrlDir);
@@ -174,7 +188,7 @@ public class PlayerRocket {
         crashed = false;
         
         x = random.nextInt(Framework.frameWidth - rocketImgWidth);
-        y = 10;
+        y = rocketStartingY;
         
         speedX = 0;
         speedY = 0;
@@ -278,33 +292,33 @@ public class PlayerRocket {
                 case UP:
                     rocketPlaceholder = rocketImg;
                     rocketFirePlaceholder = rocketFireImg;
-                    x_fire = x + 12;
-                    y_fire = y + 66;
+                    x_fire = x + (rocketImgWidth - rocketFireImgWidth)/2;
+                    y_fire = y + rocketImgHeight - rocketFireImgHeight/overlapFractionInverted;
                     break;
                 case DOWN:
                     rocketPlaceholder = rocketImgDown;
                     rocketFirePlaceholder = rocketFireImgDown;
-                    x_fire = x + 12;
-                    y_fire = y - 66;
+                    x_fire = x + (rocketImgWidth - rocketFireImgWidth)/2;
+                    y_fire = y - rocketImgHeight + rocketFireImgHeight/overlapFractionInverted;
                     break;
                 case LEFT:
                     rocketPlaceholder = rocketImgLeft;
                     rocketFirePlaceholder = rocketFireImgLeft;
-                    x_fire = x + 66;
-                    y_fire = y + 12;
+                    x_fire = x + rocketImgHeight - rocketFireImgHeight/overlapFractionInverted;
+                    y_fire = y + (rocketImgWidth - rocketFireImgWidth)/2;
                     break;
                 case RIGHT:
                     rocketPlaceholder = rocketImgRight;
                     rocketFirePlaceholder = rocketFireImgRight;
-                    x_fire = x - 66;
-                    y_fire = y + 12;
+                    x_fire = x - rocketImgHeight + rocketFireImgHeight/overlapFractionInverted;
+                    y_fire = y + (rocketImgWidth - rocketFireImgWidth)/2;
                     break;
                 default: //case NONE
                     //player hasn't started moving yet
                     rocketPlaceholder = rocketImg;
                     rocketFirePlaceholder = rocketFireImg;
-                    x_fire = x + 12;
-                    y_fire = y + 66;
+                    x_fire = x + (rocketImgWidth - rocketFireImgWidth)/2;
+                    y_fire = y + rocketImgHeight- rocketFireImgHeight/overlapFractionInverted;
             }
              // draw rocket fire 
             if(Canvas.keyboardKeyState(KeyEvent.VK_SPACE))

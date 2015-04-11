@@ -126,7 +126,7 @@ public class Game {
             playerRocket.crashed = true;
             Framework.gameState = Framework.GameState.GAMEOVER;
         }
-        else if(playerRocket.y + playerRocket.rocketImgHeight - 10 > landingArea.y)
+        else if(playerRocket.y + playerRocket.rocketImgHeight - landingArea.landingAreaImgHeight > landingArea.y)
         {
             // Here we check if the rocket is over landing area.
             if((playerRocket.x > landingArea.x) && 
