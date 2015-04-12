@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.LinkedList;
 import javax.imageio.ImageIO;
 
 /**
@@ -28,6 +32,10 @@ public class Game {
      * Landing area on which rocket will have to land.
      */
     private LandingArea landingArea;
+
+    private List <PowerUp> powerUps;
+    private Iterator <PowerUp> powerUpIterator;
+    private int numPowerUps;
     
     /**
      * Game background image.
@@ -72,11 +80,23 @@ public class Game {
     {
         playerRocket = new PlayerRocket();
         landingArea  = new LandingArea();
+        powerUps = new LinkedList<PowerUp>();
+        numPowerUps = 5;
+        PopulatePowerUps();
+
         audioInstance = Audio.getInstance();
 
         gameInstructionFont = new Font("TimesRoman", Font.PLAIN, 12);
     }
     
+    private void PopulatePowerUps()
+    {
+        for(int i = 0; i < numPowerUps; i++)
+        {
+            powerUps.add(new PowerUp());
+        }
+    }
+
     /**
      * Load game files - images, sounds, ...
      */
@@ -102,6 +122,8 @@ public class Game {
     public void RestartGame()
     {
         playerRocket.ResetPlayer();
+        powerUps.clear();
+        PopulatePowerUps();
         audioInstance.GameRestarted();
     }
     
@@ -136,6 +158,19 @@ public class Game {
                 Framework.gameState = Framework.GameState.GAMEOVER;
             }
         }
+
+        // Check to see if powerups were collected
+        powerUpIterator = powerUps.iterator();
+        while(powerUpIterator.hasNext())
+        {
+            if(powerUpIterator.next().isTouching(playerRocket.x, playerRocket.y, 
+                playerRocket.rocketImgWidth, playerRocket.rocketImgHeight))
+            {
+                //TODO: little animation? Also play a sound
+                powerUpIterator.remove();
+            }
+        }
+
     }
     
     /**
@@ -151,6 +186,11 @@ public class Game {
         landingArea.Draw(g2d);
         
         playerRocket.Draw(g2d);
+        powerUpIterator = powerUps.iterator();
+        while(powerUpIterator.hasNext())
+        {
+            powerUpIterator.next().Draw(g2d);
+        }
     }
     
     
