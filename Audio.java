@@ -22,6 +22,8 @@ public class Audio{
     public enum SituationForSound{
         HIT_WALL,
         HIT_SELF,
+        MOVE_ERROR,
+        POWER_UP,
         ENEMY_HIT,
         SHAT_ENEMY,
         NONE
@@ -35,9 +37,17 @@ public class Audio{
     private String shatEnemyFileName = "/DragonPoopGame/resources/audio/bloop.wav";
     private Clip shatEnemySound;
 
+    private String moveErrorFileName = "/DragonPoopGame/resources/audio/blip.wav";
+    private Clip moveErrorSound;
+
+    private String powerUpFileName = "/DragonPoopGame/resources/audio/aah.wav";
+    private Clip powerUpSound;
+
     public Audio(){
         hitWallSound = LoadSound(hitWallFileName);
         shatEnemySound = LoadSound(shatEnemyFileName);
+        moveErrorSound = LoadSound(moveErrorFileName);
+        powerUpSound = LoadSound(powerUpFileName);
     }
 
 	//Load sound
@@ -88,7 +98,13 @@ public class Audio{
                 break;
             case SHAT_ENEMY:
                 PlaySound(shatEnemySound);
-                break;                
+                break;           
+            case MOVE_ERROR:
+                PlaySound(moveErrorSound);
+                break;
+            case POWER_UP:
+                PlaySound(powerUpSound);
+                break;      
             default:
                 //no play    
         }

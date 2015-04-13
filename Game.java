@@ -166,7 +166,8 @@ public class Game {
             if(powerUpIterator.next().isTouching(playerRocket.x, playerRocket.y, 
                 playerRocket.rocketImgWidth, playerRocket.rocketImgHeight))
             {
-                //TODO: little animation? Also play a sound
+                //TODO: little animation? 
+                audioInstance.PlaySound(Audio.SituationForSound.POWER_UP);
                 powerUpIterator.remove();
             }
         }

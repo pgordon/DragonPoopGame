@@ -208,7 +208,7 @@ public class PlayerRocket {
         {
             if(rocketFacing == Direction.DOWN)
             {
-                //TODO: a sound
+                audioInstance.PlaySound(Audio.SituationForSound.MOVE_ERROR);
             }
             else
             {
@@ -222,7 +222,7 @@ public class PlayerRocket {
         {
             if(rocketFacing == Direction.UP)
             {
-                //TODO: a sound
+                audioInstance.PlaySound(Audio.SituationForSound.MOVE_ERROR);
             }
             else
             {
@@ -236,7 +236,7 @@ public class PlayerRocket {
         {
             if(rocketFacing == Direction.RIGHT)
             {
-                //TODO: a sound
+                audioInstance.PlaySound(Audio.SituationForSound.MOVE_ERROR);
             }
             else
             {
@@ -250,7 +250,7 @@ public class PlayerRocket {
         {
             if(rocketFacing == Direction.LEFT)
             {
-                //TODO: a sound
+                audioInstance.PlaySound(Audio.SituationForSound.MOVE_ERROR);
             }
             else
             {

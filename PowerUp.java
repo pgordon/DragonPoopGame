@@ -34,13 +34,8 @@ public class PowerUp {
     private Random random;
     
     public PowerUp()
-    {
-        Initialize();
-        LoadContent();
-    }
-    
-    private void Initialize()
     {   
+        LoadContent();
         random = new Random();
         x = random.nextInt(Framework.frameWidth - powerUpImgWidth);
         y = random.nextInt(Framework.frameHeight - powerUpImgHeight);
