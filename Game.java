@@ -37,6 +37,8 @@ public class Game {
     private Iterator <PowerUp> powerUpIterator;
     private int numPowerUps;
     
+    private Iterator<Projectile> it;
+
     /**
      * Game background image.
      */
@@ -136,6 +138,13 @@ public class Game {
      */
     public void UpdateGame(long gameTime, Point mousePosition)
     {
+        // Move the projectiles
+        it = Projectile.s_Projectiles.iterator();
+        while(it.hasNext())
+        {
+            it.next().Update();
+        }
+
         // Move the rocket
         playerRocket.Update();
         
@@ -191,6 +200,12 @@ public class Game {
         while(powerUpIterator.hasNext())
         {
             powerUpIterator.next().Draw(g2d);
+        }
+
+        it = Projectile.s_Projectiles.iterator();
+        while(it.hasNext())
+        {
+            it.next().Draw(g2d);
         }
     }
     

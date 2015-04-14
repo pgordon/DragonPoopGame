@@ -194,7 +194,7 @@ public class PlayerRocket {
         speedY = 0;
     }
     
-    private enum Direction{
+    public enum Direction{
         UP, DOWN, LEFT, RIGHT, NONE
     }
     private Direction rocketFacing = Direction.NONE;
@@ -321,13 +321,33 @@ public class PlayerRocket {
                     y_fire = y + rocketImgHeight- rocketFireImgHeight/overlapFractionInverted;
             }
              // draw rocket fire 
+            //TODO: restrict sensitivity of keypresses: only one projectile per strike
             if(Canvas.keyboardKeyState(KeyEvent.VK_SPACE))
             {
                 g2d.drawImage(rocketFirePlaceholder, x_fire, y_fire, null);
+                Projectile.s_Projectiles.add( new Projectile(x_fire, y_fire, 
+                    OppositeDirection(rocketFacing), rocketFirePlaceholder) );
                 audioInstance.PlaySound(Audio.SituationForSound.SHAT_ENEMY);
             }
 
             g2d.drawImage(rocketPlaceholder, x, y, null);
+        }
+    }
+
+    private Direction OppositeDirection(Direction direction)
+    {
+        switch(rocketFacing)
+        {
+            case UP:
+                return Direction.DOWN;
+            case DOWN:
+                return Direction.UP;
+            case LEFT:
+                return Direction.RIGHT;
+            case RIGHT:
+                return Direction.LEFT;
+            default: //case NONE
+                return Direction.NONE;
         }
     }
     
