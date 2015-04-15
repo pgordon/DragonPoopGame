@@ -10,13 +10,15 @@ public class Projectile
 {
     private static int maxProjectiles = 5;
     public static List <Projectile> s_Projectiles = 
-        new ArrayList<Projectile>(maxProjectiles);
+    new ArrayList<Projectile>(maxProjectiles);
 
     int speed = 6; //in pix per frame
     int xPos;
     int yPos;
     PlayerRocket.Direction direction;
     BufferedImage projectileImage;
+    int projectileImgWidth;
+    int projectileImgHeight;
 
     public Projectile(int xStart, int yStart, PlayerRocket.Direction direction, BufferedImage projectileImage)
     {
@@ -24,6 +26,8 @@ public class Projectile
         yPos = yStart;
         this.direction = direction;
         this.projectileImage = projectileImage;
+        projectileImgWidth = projectileImage.getWidth();
+        projectileImgHeight = projectileImage.getHeight();
     }
 
     public void Draw(Graphics2D g2d)
@@ -50,7 +54,15 @@ public class Projectile
             default: 
                 //case NONE
         }
+    }
 
-        //TODO: remove from list if out of frame
+    public boolean InFrame()
+    {
+        if(xPos + projectileImgWidth < 0 || xPos >= Framework.frameWidth ||
+            yPos + projectileImgHeight < 0 || yPos >= Framework.frameHeight)
+        {
+            return false;
+        }
+        return true;
     }
 }

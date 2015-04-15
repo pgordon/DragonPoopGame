@@ -129,7 +129,7 @@ public class Game {
         audioInstance.GameRestarted();
     }
     
-    
+    Projectile temp;
     /**
      * Update game logic.
      * 
@@ -142,8 +142,13 @@ public class Game {
         it = Projectile.s_Projectiles.iterator();
         while(it.hasNext())
         {
-            it.next().Update();
+            temp = it.next();
+            if(temp.InFrame())
+                temp.Update();
+            else
+                it.remove();
         }
+        
 
         // Move the rocket
         playerRocket.Update();
