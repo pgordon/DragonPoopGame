@@ -12,13 +12,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  * The space rocket with which player will have to land.
  * 
  * @author www.gametutorial.net
  */
 
-public class PlayerRocket {
+public class PlayerRocket implements ActionListener {
     
     /**
      * We use this to generate a random number for starting x coordinate of the rocket.
@@ -269,6 +272,8 @@ public class PlayerRocket {
     private int x_fire = 0;
     private int y_fire = 0;
 
+    private boolean FireWasTriggered = false;
+
     public void Draw(Graphics2D g2d)
     {
         g2d.setColor(Color.white);
@@ -322,8 +327,11 @@ public class PlayerRocket {
             }
              // draw rocket fire 
             //TODO: restrict sensitivity of keypresses: only one projectile per strike
-            if(Canvas.keyboardKeyState(KeyEvent.VK_SPACE))
+            //TODO: read about events some more here: https://docs.oracle.com/javase/tutorial/uiswing/events/intro.html
+            //and here: http://www.javaworld.com/article/2077333/core-java/mr-happy-object-teaches-custom-events.html
+            if(FireWasTriggered)
             {
+                FireWasTriggered = false;
                 g2d.drawImage(rocketFirePlaceholder, x_fire, y_fire, null);
                 Projectile.s_Projectiles.add( new Projectile(x_fire, y_fire, 
                     OppositeDirection(rocketFacing), rocketFirePlaceholder) );
@@ -349,6 +357,11 @@ public class PlayerRocket {
             default: //case NONE
                 return Direction.NONE;
         }
+    }
+
+    public void actionPerformed(ActionEvent e)
+    {
+
     }
     
 }
