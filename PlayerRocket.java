@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -12,16 +13,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * The space rocket with which player will have to land.
  * 
  * @author www.gametutorial.net
  */
 
-public class PlayerRocket implements ActionListener {
+public class PlayerRocket implements KeyReleaseListener {
     
     /**
      * We use this to generate a random number for starting x coordinate of the rocket.
@@ -359,9 +357,10 @@ public class PlayerRocket implements ActionListener {
         }
     }
 
-    public void actionPerformed(ActionEvent e)
-    {
-
+    public void keyReleasedEvent(KeyEvent e) {
+        System.out.println("keyReleased="+KeyEvent.getKeyText(e.getKeyCode()) + " that is code: " + e.getKeyCode() + " and vk_space is " + KeyEvent.VK_SPACE);
+        if(e.getKeyCode() == KeyEvent.VK_SPACE)
+            FireWasTriggered = true;
     }
     
 }
