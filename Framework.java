@@ -11,6 +11,9 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Framework that controls the game (Game.java) that created it, update it and draw it on the screen.
@@ -287,6 +290,13 @@ public class Framework extends Canvas {
         }
     }
 
+
+    static List <KeyReleaseListener> subscribers = new ArrayList <KeyReleaseListener>();
+    public static void subscribeToKeyboard(KeyReleaseListener al)
+    {
+        subscribers.add(al);
+    }
+
     /**
      * This method is called when keyboard key is released.
      *
@@ -297,6 +307,13 @@ public class Framework extends Canvas {
     {
         switch (gameState)
         {
+            case PLAYING:
+                Iterator <KeyReleaseListener> it = subscribers.iterator();
+                while(it.hasNext())
+                {
+                    it.next().keyReleasedEvent(e);
+                }
+            break;
             case MAIN_MENU:
                 newGame();
             break;

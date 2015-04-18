@@ -11,9 +11,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
 import javax.swing.JPanel;
 
 /**
@@ -90,23 +87,6 @@ public abstract class Canvas extends JPanel implements KeyListener, MouseListene
     {
         keyboardState[e.getKeyCode()] = false;
         keyReleasedFramework(e);
-
-        keyboardEventFired(e);
-    }
-
-    List <KeyReleaseListener> subscribers = new ArrayList <KeyReleaseListener>();
-    public void subscribeToKeyboard(KeyReleaseListener al)
-    {
-        subscribers.add(al);
-    }
-
-    private void keyboardEventFired(KeyEvent ke)
-    {
-        Iterator <KeyReleaseListener> it = subscribers.iterator();
-        while(it.hasNext())
-        {
-            it.next().keyReleasedEvent(ke);
-        }
     }
 
     @Override
