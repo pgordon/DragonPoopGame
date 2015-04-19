@@ -29,7 +29,10 @@ public class Audio{
         NONE
     }
 
-    //TODO later, have background music (looping sound) enum
+    /*TODO later, have more background music for diff levels or moods; also the option to not have any
+    public enum BackgroundSound{
+        BRIGHT_MIDI_LOOP
+    }*/
 
 	private String hitWallFileName = "/DragonPoopGame/resources/audio/meep.wav";
     private Clip hitWallSound;
@@ -43,11 +46,16 @@ public class Audio{
     private String powerUpFileName = "/DragonPoopGame/resources/audio/aah.wav";
     private Clip powerUpSound;
 
+    private String brightMidiLoopFileName = "/DragonPoopGame/resources/audio/heyMoonrise.wav";
+    private Clip brightMidiBG;
+
     public Audio(){
         hitWallSound = LoadSound(hitWallFileName);
         shatEnemySound = LoadSound(shatEnemyFileName);
         moveErrorSound = LoadSound(moveErrorFileName);
         powerUpSound = LoadSound(powerUpFileName);
+
+        brightMidiBG = LoadSound(brightMidiLoopFileName);
     }
 
 	//Load sound
@@ -79,34 +87,30 @@ public class Audio{
 
     public void PlaySoundOnce(SituationForSound sit)
     {
-        switch(sit)
-        {
-            case HIT_WALL:
-                PlaySoundOnce(hitWallSound);
-                break;
-            default:
-                //no play    
-        }
+        PlaySoundOnce(GetClip(sit));
     }
 
     public void PlaySound(SituationForSound sit)
     {
+        PlaySound(GetClip(sit));
+    }
+
+    private Clip GetClip(SituationForSound sit)
+    {
         switch(sit)
         {
             case HIT_WALL:
-                PlaySound(hitWallSound);
-                break;
+                return hitWallSound;
             case SHAT_ENEMY:
-                PlaySound(shatEnemySound);
-                break;           
+                return shatEnemySound;
             case MOVE_ERROR:
-                PlaySound(moveErrorSound);
-                break;
+                return moveErrorSound;
             case POWER_UP:
-                PlaySound(powerUpSound);
-                break;      
+                return powerUpSound;
             default:
-                //no play    
+                //no clip  
+                System.err.println("No audio clip found for " + sit.toString());
+                return null;
         }
     }
 
@@ -121,10 +125,29 @@ public class Audio{
         clip.start();        
     }
 
-    //TODO: add a check to see if it is playing and if so, don't?
     private void PlaySound(Clip clip)
     {
-        clip.setFramePosition(0);
-        clip.start();
+        if(!clip.isRunning())
+        {
+            clip.setFramePosition(0);
+            clip.start();
+        }
+    }
+
+    //There's just the one for now
+    public void PlayBGLoop()
+    {
+        PlayLoopingSound(brightMidiBG);
+    }
+
+    private void PlayLoopingSound(Clip clip)
+    {
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+
+    private void StopSound(Clip clip)
+    {
+        if(clip.isRunning())
+            clip.stop();
     }
 }

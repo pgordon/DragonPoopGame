@@ -69,6 +69,7 @@ public class Game {
                 LoadContent();
                 
                 Framework.gameState = Framework.GameState.PLAYING;
+                audioInstance.PlayBGLoop();
             }
         };
         threadForInitGame.start();
