@@ -130,7 +130,6 @@ public class PlayerRocket implements KeyReleaseListener {
         ResetPlayer();
         
         speedAccelerating = 5;
-        
         topLandingSpeed = 7;
 
         // 1/overlapFractionInverted is multiplied by the projectile image height
@@ -139,6 +138,8 @@ public class PlayerRocket implements KeyReleaseListener {
         coordinateFont = new Font(Font.SANS_SERIF, Font.PLAIN, 30);
 
         audioInstance = Audio.getInstance();
+
+        Framework.subscribeToKeyboard(this);
     }
     
     private void LoadContent()
@@ -324,9 +325,6 @@ public class PlayerRocket implements KeyReleaseListener {
                     y_fire = y + rocketImgHeight- rocketFireImgHeight/overlapFractionInverted;
             }
              // draw rocket fire 
-            //TODO: restrict sensitivity of keypresses: only one projectile per strike
-            //TODO: read about events some more here: https://docs.oracle.com/javase/tutorial/uiswing/events/intro.html
-            //and here: http://www.javaworld.com/article/2077333/core-java/mr-happy-object-teaches-custom-events.html
             if(FireWasTriggered)
             {
                 FireWasTriggered = false;
@@ -358,7 +356,6 @@ public class PlayerRocket implements KeyReleaseListener {
     }
 
     public void keyReleasedEvent(KeyEvent e) {
-        System.out.println("keyReleased="+KeyEvent.getKeyText(e.getKeyCode()) + " that is code: " + e.getKeyCode() + " and vk_space is " + KeyEvent.VK_SPACE);
         if(e.getKeyCode() == KeyEvent.VK_SPACE)
             FireWasTriggered = true;
     }
