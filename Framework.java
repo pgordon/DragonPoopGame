@@ -231,7 +231,14 @@ public class Framework extends Canvas {
                 g2d.drawString("WWW.GAMETUTORIAL.NET", 7, frameHeight - 5);
             break;
             case OPTIONS:
-                //...
+                g2d.drawImage(moonLanderMenuImg, 0, 0, frameWidth, frameHeight, null);
+                g2d.setColor(Color.white);
+                g2d.drawString("OPTIONS", frameWidth / 2 - 117, frameHeight / 2);
+                g2d.drawString("Background Music....   ", frameWidth / 2 - 100, frameHeight / 2 + 30);
+                g2d.setColor(Color.green);
+                g2d.drawString("ON", frameWidth/2 + 30, frameHeight/2 + 30);
+                g2d.setColor(Color.white);
+                g2d.drawString("OFF", frameWidth/2 + 70, frameHeight/2 + 30);
             break;
             case GAME_CONTENT_LOADING:
                 g2d.setColor(Color.white);
@@ -313,14 +320,17 @@ public class Framework extends Canvas {
                 {
                     it.next().keyReleasedEvent(e);
                 }
-            break;
+                break;
+            case OPTIONS:
+                newGame();            
+                break;
             case MAIN_MENU:
-                newGame();
-            break;
+                gameState = GameState.OPTIONS;
+                break;
             case GAMEOVER:
                 if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
                     restartGame();
-            break;
+                break;
         }
     }
 
