@@ -27,6 +27,12 @@ public class PowerUp {
 
     public int powerUpImgWidth;
     public int powerUpImgHeight;
+
+    private Animation animation;
+    private long frameTime = 40; //24 frames a second
+    private long delay = 1000; //one second in ms
+    private int numAnimFrames = 12;
+    private boolean loopAnim = true;
     
     /**
      * We use this to generate a random number for starting coordinates
@@ -39,15 +45,18 @@ public class PowerUp {
         random = new Random();
         x = random.nextInt(Framework.frameWidth - powerUpImgWidth);
         y = random.nextInt(Framework.frameHeight - powerUpImgHeight);
+
+        animation = new Animation(powerUpImg, powerUpImgWidth, powerUpImgHeight, 
+            numAnimFrames, frameTime, loopAnim, x, y, delay);
     }
     
     private void LoadContent()
     {
         try
         {
-            URL powerUpImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/power_up.png");
+            URL powerUpImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/power_up_anim.png");
             powerUpImg = ImageIO.read(powerUpImgUrl);
-            powerUpImgWidth = powerUpImg.getWidth();
+            powerUpImgWidth = powerUpImg.getWidth()/numAnimFrames;
             powerUpImgHeight = powerUpImg.getHeight();
         }
         catch (IOException ex) {
@@ -55,10 +64,10 @@ public class PowerUp {
         }
     }
     
-    
+    //don't have to change co-ordinate because power-ups don't move
     public void Draw(Graphics2D g2d)
     {
-        g2d.drawImage(powerUpImg, x, y, null);
+        animation.Draw(g2d);
     }
 
     public boolean isTouching(int x_in, int y_in, int width, int height)
