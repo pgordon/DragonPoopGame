@@ -157,7 +157,7 @@ public class Framework extends Canvas {
                     lastTime = System.nanoTime();
                 break;
                 case GAMEOVER:
-                    //...
+                    game.GameOver();
                 break;
                 case MAIN_MENU:
                     //...

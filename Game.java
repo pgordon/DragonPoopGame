@@ -215,6 +215,14 @@ public class Game {
         }
     }
     
+    /**
+    * Clean up the previous game
+    */
+    public void GameOver()
+    {
+        Projectile.s_Projectiles.clear();
+
+    }
     
     /**
      * Draw the game over screen.
