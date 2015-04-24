@@ -139,7 +139,7 @@ public class PlayerRocket implements KeyReleaseListener {
 
         audioInstance = Audio.getInstance();
 
-        Framework.subscribeToKeyboard(this);
+        Framework.subscribeToKeyboardInGame(this);
     }
     
     private void LoadContent()

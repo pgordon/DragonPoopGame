@@ -10,7 +10,7 @@ public class Projectile
 {
     private static int maxProjectiles = 5;
     public static List <Projectile> s_Projectiles = 
-    new ArrayList<Projectile>(maxProjectiles);
+        new ArrayList<Projectile>(maxProjectiles);
 
     int speed = 6; //in pix per frame
     int xPos;

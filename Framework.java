@@ -23,6 +23,10 @@ import java.util.Iterator;
 
 public class Framework extends Canvas {
 
+    private boolean optionsMusicOn = true;
+    public boolean backgroundMusicOn() { 
+        return optionsMusicOn; 
+    }
     /**
      * Width of the frame.
      */
@@ -115,7 +119,6 @@ public class Framework extends Canvas {
      */
     private void Initialize()
     {
-
     }
 
     /**
@@ -235,9 +238,12 @@ public class Framework extends Canvas {
                 g2d.setColor(Color.white);
                 g2d.drawString("OPTIONS", frameWidth / 2 - 117, frameHeight / 2);
                 g2d.drawString("Background Music....   ", frameWidth / 2 - 100, frameHeight / 2 + 30);
-                g2d.setColor(Color.green);
+                if(backgroundMusicOn()) g2d.setColor(Color.green);
                 g2d.drawString("ON", frameWidth/2 + 30, frameHeight/2 + 30);
-                g2d.setColor(Color.white);
+                if(backgroundMusicOn()) 
+                    g2d.setColor(Color.white); 
+                else 
+                    g2d.setColor(Color.green);
                 g2d.drawString("OFF", frameWidth/2 + 70, frameHeight/2 + 30);
             break;
             case GAME_CONTENT_LOADING:
@@ -298,10 +304,10 @@ public class Framework extends Canvas {
     }
 
 
-    static List <KeyReleaseListener> subscribers = new ArrayList <KeyReleaseListener>();
-    public static void subscribeToKeyboard(KeyReleaseListener al)
+    static List <KeyReleaseListener> subscribersInGame = new ArrayList <KeyReleaseListener>();
+    public static void subscribeToKeyboardInGame(KeyReleaseListener al)
     {
-        subscribers.add(al);
+        subscribersInGame.add(al);
     }
 
     /**
@@ -312,20 +318,28 @@ public class Framework extends Canvas {
     @Override
     public void keyReleasedFramework(KeyEvent e)
     {
+        Iterator <KeyReleaseListener> it;
         switch (gameState)
         {
             case PLAYING:
-                Iterator <KeyReleaseListener> it = subscribers.iterator();
+                it = subscribersInGame.iterator();
                 while(it.hasNext())
                 {
                     it.next().keyReleasedEvent(e);
                 }
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    gameState = GameState.OPTIONS;
                 break;
             case OPTIONS:
-                newGame();            
+                if(e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    gameState = GameState.PLAYING;
+                if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT ||
+                    e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D )
+                    optionsMusicOn = !optionsMusicOn;
                 break;
             case MAIN_MENU:
                 gameState = GameState.OPTIONS;
+                newGame(); 
                 break;
             case GAMEOVER:
                 if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
