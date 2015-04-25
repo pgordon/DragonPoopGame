@@ -27,6 +27,13 @@ public class Framework extends Canvas {
     public boolean backgroundMusicOn() { 
         return optionsMusicOn; 
     }
+    private void backgroundMusicSet(boolean musicOn){
+        optionsMusicOn = musicOn;
+        if(musicOn)
+            audioSingleton.PlayBGLoop();
+        else
+            audioSingleton.StopBGLoop();
+    }
     /**
      * Width of the frame.
      */
@@ -88,6 +95,9 @@ public class Framework extends Canvas {
     // The actual game
     private Game game;
 
+    //audio object
+    private Audio audioSingleton;
+
 
     /**
      * Image for menu.
@@ -119,6 +129,7 @@ public class Framework extends Canvas {
      */
     private void Initialize()
     {
+        audioSingleton = Audio.getInstance();
     }
 
     /**
@@ -335,7 +346,7 @@ public class Framework extends Canvas {
                     gameState = GameState.PLAYING;
                 if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT ||
                     e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D )
-                    optionsMusicOn = !optionsMusicOn;
+                    backgroundMusicSet(!backgroundMusicOn());
                 break;
             case MAIN_MENU:
                 gameState = GameState.OPTIONS;

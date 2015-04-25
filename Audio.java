@@ -49,6 +49,8 @@ public class Audio{
     private String brightMidiLoopFileName = "/DragonPoopGame/resources/audio/heyMoonrise.wav";
     private Clip brightMidiBG;
 
+    private int loopPosition = 0;
+
     public Audio(){
         hitWallSound = LoadSound(hitWallFileName);
         shatEnemySound = LoadSound(shatEnemyFileName);
@@ -142,6 +144,7 @@ public class Audio{
 
     private void PlayLoopingSound(Clip clip)
     {
+        clip.setFramePosition(loopPosition);
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
@@ -149,5 +152,14 @@ public class Audio{
     {
         if(clip.isRunning())
             clip.stop();
+    }
+
+    public void StopBGLoop()
+    {
+        if(brightMidiBG.isRunning())
+        {
+            loopPosition = brightMidiBG.getFramePosition();
+            brightMidiBG.stop();
+        }
     }
 }

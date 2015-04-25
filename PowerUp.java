@@ -30,7 +30,7 @@ public class PowerUp {
 
     private Animation animation;
     private long frameTime = 40; //24 frames a second
-    private long delay = 1000; //one second in ms
+    private long delay = 500; //one second in ms
     private int numAnimFrames = 12;
     private boolean loopAnim = true;
     

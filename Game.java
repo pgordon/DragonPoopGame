@@ -149,7 +149,6 @@ public class Game {
             else
                 it.remove();
         }
-        
 
         // Move the rocket
         playerRocket.Update();
