@@ -11,6 +11,8 @@ import java.net.URL;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.LinkedList;
+import java.util.Queue;
 import javax.imageio.ImageIO;
 
 /**
@@ -74,7 +76,7 @@ public class PlayerRocket implements KeyReleaseListener {
     //How long a dragon (how many units of tail, including head)
     private int segments = 1;
     //TODO: ref to tail segment
-
+    private Queue <MoveNode> moveHistory = new LinkedList<MoveNode>();
             
     /**
      * Image of the rocket in air.
@@ -204,6 +206,8 @@ public class PlayerRocket implements KeyReleaseListener {
         speedY = 0;
 
         ammoStored = 0;
+
+        moveHistory.clear();
     }
     
     public enum Direction{
@@ -224,9 +228,11 @@ public class PlayerRocket implements KeyReleaseListener {
             }
             else
             {
+                if(rocketFacing != Direction.UP)
+                    moveHistory.add(new MoveNode(x, y, Direction.UP));
                 speedY = -speedAccelerating;
                 speedX = 0;
-                rocketFacing = Direction.UP;
+                rocketFacing = Direction.UP;                
             }
         }
         // Calculating speed for moving up or down.
@@ -238,6 +244,8 @@ public class PlayerRocket implements KeyReleaseListener {
             }
             else
             {
+                if(rocketFacing != Direction.DOWN)
+                    moveHistory.add(new MoveNode(x, y, Direction.DOWN));
                  speedY = speedAccelerating;
                  speedX = 0;
                  rocketFacing = Direction.DOWN;
@@ -252,6 +260,8 @@ public class PlayerRocket implements KeyReleaseListener {
             }
             else
             {
+                if(rocketFacing != Direction.LEFT)
+                    moveHistory.add(new MoveNode(x, y, Direction.LEFT));
                 speedX = -speedAccelerating;
                 speedY = 0;
                 rocketFacing = Direction.LEFT;
@@ -266,6 +276,8 @@ public class PlayerRocket implements KeyReleaseListener {
             }
             else
             {
+                if(rocketFacing != Direction.RIGHT)
+                    moveHistory.add(new MoveNode(x, y, Direction.RIGHT));
                 speedX = speedAccelerating;
                 speedY = 0;
                 rocketFacing = Direction.RIGHT;
@@ -287,6 +299,7 @@ public class PlayerRocket implements KeyReleaseListener {
     {
         g2d.setColor(Color.white);
         g2d.setFont(coordinateFont); 
+        g2d.drawString("# moves: " + moveHistory.size(), 25, 25);
         
         // If the rocket is landed.
         if(landed)
@@ -348,7 +361,6 @@ public class PlayerRocket implements KeyReleaseListener {
                 }
                 else
                 { 
-                    //TODO: play an empty sound
                     audioInstance.PlaySound(Audio.SituationForSound.OUT_OF_AMMO);
                 }
             }
@@ -386,3 +398,4 @@ public class PlayerRocket implements KeyReleaseListener {
     }
     
 }
+
