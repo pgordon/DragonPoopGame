@@ -183,6 +183,8 @@ public class Game {
                 //TODO: little animation? 
                 audioInstance.PlaySound(Audio.SituationForSound.POWER_UP);
                 powerUpIterator.remove();
+
+                playerRocket.incrementAmmo();
             }
         }
 

@@ -26,6 +26,7 @@ public class Audio{
         POWER_UP,
         ENEMY_HIT,
         SHAT_ENEMY,
+        OUT_OF_AMMO,
         NONE
     }
 
@@ -46,6 +47,9 @@ public class Audio{
     private String powerUpFileName = "/DragonPoopGame/resources/audio/aah.wav";
     private Clip powerUpSound;
 
+    private String outOfAmmoFileName = "/DragonPoopGame/resources/audio/peh.wav";
+    private Clip outOfAmmoSound;
+
     private String brightMidiLoopFileName = "/DragonPoopGame/resources/audio/heyMoonrise.wav";
     private Clip brightMidiBG;
 
@@ -56,6 +60,7 @@ public class Audio{
         shatEnemySound = LoadSound(shatEnemyFileName);
         moveErrorSound = LoadSound(moveErrorFileName);
         powerUpSound = LoadSound(powerUpFileName);
+        outOfAmmoSound = LoadSound(outOfAmmoFileName);
 
         brightMidiBG = LoadSound(brightMidiLoopFileName);
     }
@@ -109,6 +114,8 @@ public class Audio{
                 return moveErrorSound;
             case POWER_UP:
                 return powerUpSound;
+            case OUT_OF_AMMO:
+                return outOfAmmoSound;
             default:
                 //no clip  
                 System.err.println("No audio clip found for " + sit.toString());

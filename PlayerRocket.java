@@ -67,6 +67,14 @@ public class PlayerRocket implements KeyReleaseListener {
      * How fast and to which direction rocket is moving on y coordinate?
      */
     public int speedY;
+
+    //How much ammo is left to shoot. Incremented by enemies eaten
+    private int ammoStored = 0;
+
+    //How long a dragon (how many units of tail, including head)
+    private int segments = 1;
+    //TODO: ref to tail segment
+
             
     /**
      * Image of the rocket in air.
@@ -194,6 +202,8 @@ public class PlayerRocket implements KeyReleaseListener {
         
         speedX = 0;
         speedY = 0;
+
+        ammoStored = 0;
     }
     
     public enum Direction{
@@ -328,11 +338,21 @@ public class PlayerRocket implements KeyReleaseListener {
             if(FireWasTriggered)
             {
                 FireWasTriggered = false;
-                g2d.drawImage(rocketFirePlaceholder, x_fire, y_fire, null);
-                Projectile.s_Projectiles.add( new Projectile(x_fire, y_fire, 
-                    OppositeDirection(rocketFacing), rocketFirePlaceholder) );
-                audioInstance.PlaySound(Audio.SituationForSound.SHAT_ENEMY);
+                if(ammoStored > 0)
+                {
+                    g2d.drawImage(rocketFirePlaceholder, x_fire, y_fire, null);
+                    Projectile.s_Projectiles.add( new Projectile(x_fire, y_fire, 
+                        OppositeDirection(rocketFacing), rocketFirePlaceholder) );
+                    audioInstance.PlaySound(Audio.SituationForSound.SHAT_ENEMY);
+                    ammoStored--;
+                }
+                else
+                { 
+                    //TODO: play an empty sound
+                    audioInstance.PlaySound(Audio.SituationForSound.OUT_OF_AMMO);
+                }
             }
+
 
             g2d.drawImage(rocketPlaceholder, x, y, null);
         }
@@ -358,6 +378,11 @@ public class PlayerRocket implements KeyReleaseListener {
     public void keyReleasedEvent(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE)
             FireWasTriggered = true;
+    }
+
+    public void incrementAmmo()
+    {
+        ammoStored++;
     }
     
 }
