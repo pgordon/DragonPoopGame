@@ -28,70 +28,51 @@ public class PlayerRocket implements KeyReleaseListener {
      */
     private Random random;
  
-    /**
-     * X coordinate of the rocket.
-     */
+    //Dragon head coordinates
     public int x;
-    /**
-     * Y coordinate of the rocket.
-     */
     public int y;
     
-    /**
-     * Is rocket landed?
-     */
+    //Game won?
     public boolean landed;
     
-    /**
-     * Has rocket crashed?
-     */
+    //Game lost?
     public boolean crashed;
-        
-    /**
-     * Accelerating speed of the rocket.
-     */
-    private int speedAccelerating;
-    /**
-     * Stopping/Falling speed of the rocket. Falling speed because, the gravity pulls the rocket down to the moon.
-     */
-    private int speedStopping;
     
     /**
      * Maximum speed that rocket can have without having a crash when landing.
      */
     public int topLandingSpeed;
     
-    /**
-     * How fast and to which direction rocket is moving on x coordinate?
-     */
+    //Dragon speed
+    private int speed;
+
+    //Speed broken into directions
     private int speedX;
-    /**
-     * How fast and to which direction rocket is moving on y coordinate?
-     */
     public int speedY;
 
     //How much ammo is left to shoot. Incremented by enemies eaten
     private int ammoStored = 0;
 
     //How long a dragon (how many units of tail, including head)
-    private int segments = 1;
-    //TODO: ref to tail segment
+    private int segments = 2; //TODO: ref to tail segment
+    
+    //Keeps track of turns for drawing tail
     private Queue <MoveNode> moveHistory = new LinkedList<MoveNode>();
             
-    /**
-     * Image of the rocket in air.
-     */
+    
+    //Image of the dragon head, different directions
     private BufferedImage rocketImg;
     private BufferedImage rocketImgDown;
     private BufferedImage rocketImgLeft;
     private BufferedImage rocketImgRight;
-    /**
-     * Image of the rocket when landed.
-     */
+
+    //Dragon tail segment
+    private BufferedImage dragonTailImg;
+
+    //Image of the game won dragon head
     private BufferedImage rocketLandedImg;
-    /**
-     * Image of the rocket when crashed.
-     */
+    
+    //Image of the game over dragon head
     private BufferedImage rocketCrashedImg;
     /**
      * Image of the rocket fire.
@@ -139,7 +120,7 @@ public class PlayerRocket implements KeyReleaseListener {
         
         ResetPlayer();
         
-        speedAccelerating = 5;
+        speed = 5;
         topLandingSpeed = 7;
 
         // 1/overlapFractionInverted is multiplied by the projectile image height
@@ -173,6 +154,9 @@ public class PlayerRocket implements KeyReleaseListener {
             
             URL rocketCrashedImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_crashed.png");
             rocketCrashedImg = ImageIO.read(rocketCrashedImgUrl);
+
+            URL dragonTailImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/dragonBody.png");
+            dragonTailImg = ImageIO.read(dragonTailImgUrl);
             
             URL rocketFireImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_fire.png");
             rocketFireImg = ImageIO.read(rocketFireImgUrl);
@@ -208,6 +192,8 @@ public class PlayerRocket implements KeyReleaseListener {
         ammoStored = 0;
 
         moveHistory.clear();
+
+        rocketFacing = Direction.NONE;
     }
     
     public enum Direction{
@@ -230,7 +216,7 @@ public class PlayerRocket implements KeyReleaseListener {
             {
                 if(rocketFacing != Direction.UP)
                     moveHistory.add(new MoveNode(x, y, Direction.UP));
-                speedY = -speedAccelerating;
+                speedY = -speed;
                 speedX = 0;
                 rocketFacing = Direction.UP;                
             }
@@ -246,7 +232,7 @@ public class PlayerRocket implements KeyReleaseListener {
             {
                 if(rocketFacing != Direction.DOWN)
                     moveHistory.add(new MoveNode(x, y, Direction.DOWN));
-                 speedY = speedAccelerating;
+                 speedY = speed;
                  speedX = 0;
                  rocketFacing = Direction.DOWN;
             }
@@ -262,7 +248,7 @@ public class PlayerRocket implements KeyReleaseListener {
             {
                 if(rocketFacing != Direction.LEFT)
                     moveHistory.add(new MoveNode(x, y, Direction.LEFT));
-                speedX = -speedAccelerating;
+                speedX = -speed;
                 speedY = 0;
                 rocketFacing = Direction.LEFT;
             }
@@ -278,14 +264,17 @@ public class PlayerRocket implements KeyReleaseListener {
             {
                 if(rocketFacing != Direction.RIGHT)
                     moveHistory.add(new MoveNode(x, y, Direction.RIGHT));
-                speedX = speedAccelerating;
+                speedX = speed;
                 speedY = 0;
                 rocketFacing = Direction.RIGHT;
             }
         }
-        // Moves the rocket.
+        // Moves the head
         x += speedX;
         y += speedY;
+
+        //Move the tail:
+        //TODO
     }
     
     private BufferedImage rocketPlaceholder;
