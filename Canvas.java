@@ -79,13 +79,15 @@ public abstract class Canvas extends JPanel implements KeyListener, MouseListene
     @Override
     public void keyPressed(KeyEvent e)
     {
-        keyboardState[e.getKeyCode()] = true;
+        if(e.getKeyCode() > 0 && e.getKeyCode() < keyboardState.length)
+            keyboardState[e.getKeyCode()] = true;
     }
 
     @Override
     public void keyReleased(KeyEvent e)
     {
-        keyboardState[e.getKeyCode()] = false;
+        if(e.getKeyCode() > 0 && e.getKeyCode() < keyboardState.length)
+            keyboardState[e.getKeyCode()] = false;
         keyReleasedFramework(e);
     }
 
