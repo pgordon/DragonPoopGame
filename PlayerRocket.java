@@ -38,11 +38,6 @@ public class PlayerRocket implements KeyReleaseListener {
     //Game lost?
     public boolean crashed;
     
-    /**
-     * Maximum speed that rocket can have without having a crash when landing.
-     */
-    public int topLandingSpeed;
-    
     //Dragon speed
     private int speed;
 
@@ -104,24 +99,22 @@ public class PlayerRocket implements KeyReleaseListener {
     
     public PlayerRocket()
     {
-        Initialize();
         LoadContent();
-        
-        // Now that we have rocketImgWidth we set starting x coordinate.
-        x = random.nextInt(Framework.frameWidth - rocketImgWidth);
+        Initialize();        
     }
     
-    
+    //should be called after LoadContent, as it requires rocket width, height
     private void Initialize()
     {
         random = new Random();
         
+        x = random.nextInt(Framework.frameWidth - rocketImgWidth);
+
         rocketStartingY = rocketImgHeight + 10;
         
         ResetPlayer();
         
-        speed = 5;
-        topLandingSpeed = 7;
+        speed = rocketImgWidth/2;
 
         // 1/overlapFractionInverted is multiplied by the projectile image height
         overlapFractionInverted = 4; 
