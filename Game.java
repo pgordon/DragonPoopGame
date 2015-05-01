@@ -185,6 +185,7 @@ public class Game {
                 powerUpIterator.remove();
 
                 playerRocket.incrementAmmo();
+                playerRocket.AddSegment();
             }
         }
 

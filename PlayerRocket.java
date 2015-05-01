@@ -11,9 +11,9 @@ import java.net.URL;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
+//import java.util.Iterator;
+//import java.util.LinkedList;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 /**
@@ -54,10 +54,10 @@ public class PlayerRocket implements KeyReleaseListener {
     private int ammoStored = 0;
 
     //How long a dragon (how many units of tail, including head)
-    private int segments = 2; //TODO: ref to tail segment
+    private int segments = 1; //TODO: ref to tail segment
     
-    //Keeps track of turns for drawing tail
-    private Queue <MoveNode> moveHistory = new LinkedList<MoveNode>();
+    //Keeps track of positions for drawing dragon
+    private ArrayList <MoveNode> dragonBody = new ArrayList<MoveNode>();
             
     //properties of the body segment
     private int bodyX;
@@ -199,14 +199,51 @@ public class PlayerRocket implements KeyReleaseListener {
 
         ammoStored = 0;
 
-        moveHistory.clear();
+        dragonBody.clear();
+        dragonBody.add(new MoveNode(x, y, Direction.DOWN));
 
-        rocketFacing = Direction.DOWN;
-        speedY = -speed;
+        dragonBody.get(0).direction = Direction.DOWN;
 
-        bodyX = x;
-        bodyY = y - dragonTailImgHeight;
-        bodyDirection = Direction.DOWN;
+        dragonBody.add(new MoveNode(x, y-dragonTailImgHeight, Direction.NONE));
+        segments = 2;
+    }
+
+    public void AddSegment()
+    {
+        int tail = dragonBody.size()-1;
+        MoveNode temp = dragonBody.get(tail);
+
+        switch(temp.direction)
+        {
+            case UP:
+                temp.y = temp.y + dragonTailImgHeight;
+                break;
+            case DOWN:
+                temp.y = temp.y - dragonTailImgHeight;
+                break;
+            case LEFT:
+                temp.x = temp.x + dragonTailImgWidth;
+                break;
+            case RIGHT:
+                temp.x = temp.x - dragonTailImgWidth;
+                break;
+            default: //case NONE
+                //player hasn't started moving yet, default to down
+                temp.y = temp.y - dragonTailImgHeight;
+        }
+
+        dragonBody.add(new MoveNode(temp.x, temp.y, temp.direction));
+        segments++;
+    }
+
+    public void RemoveSegment()
+    {
+        int tail = dragonBody.size()-1;
+        if(tail != 0)
+        {
+            dragonBody.remove(tail);
+            segments--;
+        }
     }
     
     public enum Direction{
@@ -221,14 +258,12 @@ public class PlayerRocket implements KeyReleaseListener {
         // Calculating speed for moving up or down.
         if(Canvas.keyboardKeyState(KeyEvent.VK_W) || Canvas.keyboardKeyState(KeyEvent.VK_UP))
         {
-            if(rocketFacing == Direction.DOWN)
+            if(dragonBody.get(0).direction == Direction.DOWN)
             {
                 audioInstance.PlaySound(Audio.SituationForSound.MOVE_ERROR);
             }
             else
             {
-                if(rocketFacing != Direction.UP)
-                    moveHistory.add(new MoveNode(x, y, Direction.UP));
                 speedY = -speed;
                 speedX = 0;
                 rocketFacing = Direction.UP;                
@@ -237,14 +272,12 @@ public class PlayerRocket implements KeyReleaseListener {
         // Calculating speed for moving up or down.
         else if(Canvas.keyboardKeyState(KeyEvent.VK_S) ||Canvas.keyboardKeyState(KeyEvent.VK_DOWN))
         {
-            if(rocketFacing == Direction.UP)
+            if(dragonBody.get(0).direction == Direction.UP)
             {
                 audioInstance.PlaySound(Audio.SituationForSound.MOVE_ERROR);
             }
             else
             {
-                if(rocketFacing != Direction.DOWN)
-                    moveHistory.add(new MoveNode(x, y, Direction.DOWN));
                  speedY = speed;
                  speedX = 0;
                  rocketFacing = Direction.DOWN;
@@ -253,14 +286,12 @@ public class PlayerRocket implements KeyReleaseListener {
         // Calculating speed for moving or stopping to the left.
         else if(Canvas.keyboardKeyState(KeyEvent.VK_A)||Canvas.keyboardKeyState(KeyEvent.VK_LEFT))
         {
-            if(rocketFacing == Direction.RIGHT)
+            if(dragonBody.get(0).direction == Direction.RIGHT)
             {
                 audioInstance.PlaySound(Audio.SituationForSound.MOVE_ERROR);
             }
             else
             {
-                if(rocketFacing != Direction.LEFT)
-                    moveHistory.add(new MoveNode(x, y, Direction.LEFT));
                 speedX = -speed;
                 speedY = 0;
                 rocketFacing = Direction.LEFT;
@@ -269,64 +300,36 @@ public class PlayerRocket implements KeyReleaseListener {
         // Calculating speed for moving or stopping to the right.
         else if(Canvas.keyboardKeyState(KeyEvent.VK_D)||Canvas.keyboardKeyState(KeyEvent.VK_RIGHT))
         {
-            if(rocketFacing == Direction.LEFT)
+            if(dragonBody.get(0).direction == Direction.LEFT)
             {
                 audioInstance.PlaySound(Audio.SituationForSound.MOVE_ERROR);
             }
             else
             {
-                if(rocketFacing != Direction.RIGHT)
-                    moveHistory.add(new MoveNode(x, y, Direction.RIGHT));
                 speedX = speed;
                 speedY = 0;
                 rocketFacing = Direction.RIGHT;
             }
         }
-        // Moves the head
+
         x += speedX;
         y += speedY;
 
-        if(moveHistory.size() > 0)
+        //Move the tail:
+        MoveNode temp;
+        for(int i = dragonBody.size() - 1; i > 0; i--)
         {
-            //Move the tail:
-            switch(bodyDirection)
-            {
-                case UP:
-                    if(bodyY <= moveHistory.peek().y)
-                        bodyDirection = moveHistory.remove().direction;
-                    else
-                        bodySpeedY = -speed;
-                    break;
-                case DOWN:
-                    if(bodyY >= moveHistory.peek().y)
-                        bodyDirection = moveHistory.remove().direction;
-                    else
-                        bodySpeedY = speed;
-                    break;
-                case LEFT:
-                    if(bodyX <= moveHistory.peek().x)
-                        bodyDirection = moveHistory.remove().direction;
-                    else
-                        bodySpeedX = -speed;
-                    break;
-                case RIGHT:
-                    if(bodyX >= moveHistory.peek().x)
-                        bodyDirection = moveHistory.remove().direction;
-                    else
-                        bodySpeedX = speed;
-                    break;
-                default:
-                    bodySpeedX = speedX;
-                    bodySpeedY = speedY;
-            }
-
-        }else
-        {
-            bodySpeedX = speedX;
-            bodySpeedY = speedY;
+            temp = dragonBody.get(i-1);
+            dragonBody.get(i).x = temp.x;
+            dragonBody.get(i).y = temp.y;
+            dragonBody.get(i).direction = temp.direction;
         }
-        bodyX += bodySpeedX;
-        bodyY += bodySpeedY;
+
+        // Moves the head
+        dragonBody.get(0).x = x;
+        dragonBody.get(0).y = y;
+        dragonBody.get(0).direction = rocketFacing;
+         
     }
     
     private BufferedImage rocketPlaceholder;
@@ -340,68 +343,79 @@ public class PlayerRocket implements KeyReleaseListener {
     {
         g2d.setColor(Color.white);
         g2d.setFont(coordinateFont); 
-        g2d.drawString("# moves: " + moveHistory.size(), 25, 25);
-        Iterator <MoveNode> it = moveHistory.iterator();
-        MoveNode temp;
-        for(int i = 0; i < moveHistory.size(); i++)
+        g2d.drawString("# segments: " + segments, 25, 25);
+        for(int i = 0; i < dragonBody.size(); i++)
         {
-            temp = it.next();
-            g2d.drawString(temp.direction + " at " + temp.x + ", " + 
-                temp.y, 25, 50+25*i);
+            g2d.drawString(i + " at " + dragonBody.get(i).x + ", " + 
+                dragonBody.get(i).y, 25, 50+25*i);
         }
-        
-        g2d.drawString("tail: ", Framework.frameWidth/2, 25);
-        g2d.drawString(bodyDirection + ": " + bodyX + ", " + 
-                bodyY, Framework.frameWidth/2, 50);
         
         // If the rocket is landed.
         if(landed)
         {
-            g2d.drawImage(rocketLandedImg, x, y, null);
+            g2d.drawImage(rocketLandedImg, dragonBody.get(0).x, dragonBody.get(0).y, null);
         }
         // If the rocket is crashed.
         else if(crashed)
         {
-            g2d.drawImage(rocketCrashedImg, x, y + rocketImgHeight - rocketCrashedImg.getHeight(), null);
+            g2d.drawImage(rocketCrashedImg, dragonBody.get(0).x, dragonBody.get(0).y + rocketImgHeight - rocketCrashedImg.getHeight(), null);
         }
         // If the rocket is still in the space.
         else
         {
-            switch(rocketFacing)
+            switch(dragonBody.get(0).direction)
             {
                 case UP:
                     rocketPlaceholder = rocketImg;
-                    rocketFirePlaceholder = rocketFireImg;
-                    x_fire = x + (rocketImgWidth - rocketFireImgWidth)/2;
-                    y_fire = y + rocketImgHeight - rocketFireImgHeight/overlapFractionInverted;
                     break;
                 case DOWN:
                     rocketPlaceholder = rocketImgDown;
-                    rocketFirePlaceholder = rocketFireImgDown;
-                    x_fire = x + (rocketImgWidth - rocketFireImgWidth)/2;
-                    y_fire = y - rocketImgHeight + rocketFireImgHeight/overlapFractionInverted;
                     break;
                 case LEFT:
                     rocketPlaceholder = rocketImgLeft;
-                    rocketFirePlaceholder = rocketFireImgLeft;
-                    x_fire = x + rocketImgHeight - rocketFireImgHeight/overlapFractionInverted;
-                    y_fire = y + (rocketImgWidth - rocketFireImgWidth)/2;
                     break;
                 case RIGHT:
                     rocketPlaceholder = rocketImgRight;
-                    rocketFirePlaceholder = rocketFireImgRight;
-                    x_fire = x - rocketImgHeight + rocketFireImgHeight/overlapFractionInverted;
-                    y_fire = y + (rocketImgWidth - rocketFireImgWidth)/2;
                     break;
                 default: //case NONE
                     //player hasn't started moving yet
                     rocketPlaceholder = rocketImg;
-                    rocketFirePlaceholder = rocketFireImg;
-                    x_fire = x + (rocketImgWidth - rocketFireImgWidth)/2;
-                    y_fire = y + rocketImgHeight- rocketFireImgHeight/overlapFractionInverted;
             }
 
-            g2d.drawImage(dragonTailImg, bodyX, bodyY, null);
+            MoveNode temp = dragonBody.get(dragonBody.size()-1);
+            switch(temp.direction)
+            {
+                case UP:
+                    rocketFirePlaceholder = rocketFireImg;
+                    x_fire = temp.x + (dragonTailImgWidth - rocketFireImgWidth)/2;
+                    y_fire = temp.y + dragonTailImgHeight - rocketFireImgHeight/overlapFractionInverted;
+                    break;
+                case DOWN:
+                    rocketFirePlaceholder = rocketFireImgDown;
+                    x_fire = temp.x + (dragonTailImgWidth - rocketFireImgWidth)/2;
+                    y_fire = temp.y - dragonTailImgHeight + rocketFireImgHeight/overlapFractionInverted;
+                    break;
+                case LEFT:
+                    rocketFirePlaceholder = rocketFireImgLeft;
+                    x_fire = temp.x + dragonTailImgHeight - rocketFireImgHeight/overlapFractionInverted;
+                    y_fire = temp.y + (dragonTailImgWidth - rocketFireImgWidth)/2;
+                    break;
+                case RIGHT:
+                    rocketFirePlaceholder = rocketFireImgRight;
+                    x_fire = temp.x - dragonTailImgHeight + rocketFireImgHeight/overlapFractionInverted;
+                    y_fire = temp.y + (dragonTailImgWidth - rocketFireImgWidth)/2;
+                    break;
+                default: //case NONE
+                    //player hasn't started moving yet
+                    //TODO: prevent this from even happening
+                    rocketFirePlaceholder = rocketFireImgDown;
+                    x_fire = temp.x + (dragonTailImgWidth - rocketFireImgWidth)/2;
+                    y_fire = temp.y - dragonTailImgHeight + rocketFireImgHeight/overlapFractionInverted;
+            }
+
+            //TODO: in for loop
+            for(int i = 1; i < dragonBody.size(); i++)
+                g2d.drawImage(dragonTailImg, dragonBody.get(i).x, dragonBody.get(i).y, null);
 
              // draw rocket fire 
             if(FireWasTriggered)
@@ -411,7 +425,7 @@ public class PlayerRocket implements KeyReleaseListener {
                 {
                     g2d.drawImage(rocketFirePlaceholder, x_fire, y_fire, null);
                     Projectile.s_Projectiles.add( new Projectile(x_fire, y_fire, 
-                        OppositeDirection(rocketFacing), rocketFirePlaceholder) );
+                        OppositeDirection(dragonBody.get(dragonBody.size()-1).direction), rocketFirePlaceholder) );
                     audioInstance.PlaySound(Audio.SituationForSound.SHAT_ENEMY);
                     ammoStored--;
                 }
@@ -422,13 +436,13 @@ public class PlayerRocket implements KeyReleaseListener {
             }
 
 
-            g2d.drawImage(rocketPlaceholder, x, y, null);
+            g2d.drawImage(rocketPlaceholder, dragonBody.get(0).x, dragonBody.get(0).y, null);
         }
     }
 
     private Direction OppositeDirection(Direction direction)
     {
-        switch(rocketFacing)
+        switch(direction)
         {
             case UP:
                 return Direction.DOWN;
