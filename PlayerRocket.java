@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import javax.imageio.ImageIO;
@@ -43,7 +44,11 @@ public class PlayerRocket implements KeyReleaseListener {
 
     //Speed broken into directions
     private int speedX;
-    public int speedY;
+    private int speedY;
+
+    //Body speed broken into directions
+    private int bodySpeedX;
+    private int bodySpeedY;
 
     //How much ammo is left to shoot. Incremented by enemies eaten
     private int ammoStored = 0;
@@ -54,6 +59,10 @@ public class PlayerRocket implements KeyReleaseListener {
     //Keeps track of turns for drawing tail
     private Queue <MoveNode> moveHistory = new LinkedList<MoveNode>();
             
+    //properties of the body segment
+    private int bodyX;
+    private int bodyY;
+    private Direction bodyDirection;
     
     //Image of the dragon head, different directions
     private BufferedImage rocketImg;
@@ -94,6 +103,10 @@ public class PlayerRocket implements KeyReleaseListener {
     private int rocketFireImgWidth;
     private int rocketFireImgHeight;
     private int overlapFractionInverted;
+
+    //Dimensions of dragon tail segment
+    private int dragonTailImgWidth;
+    private int dragonTailImgHeight;
     
     private Audio audioInstance;
     
@@ -150,6 +163,8 @@ public class PlayerRocket implements KeyReleaseListener {
 
             URL dragonTailImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/dragonBody.png");
             dragonTailImg = ImageIO.read(dragonTailImgUrl);
+            dragonTailImgWidth = dragonTailImg.getWidth();
+            dragonTailImgHeight = dragonTailImg.getHeight();
             
             URL rocketFireImgUrl = this.getClass().getResource("/DragonPoopGame/resources/images/rocket_fire.png");
             rocketFireImg = ImageIO.read(rocketFireImgUrl);
@@ -177,7 +192,7 @@ public class PlayerRocket implements KeyReleaseListener {
         crashed = false;
         
         x = random.nextInt(Framework.frameWidth - rocketImgWidth);
-        y = rocketStartingY;
+        y = rocketStartingY + dragonTailImgHeight + 10;;
         
         speedX = 0;
         speedY = 0;
@@ -186,7 +201,12 @@ public class PlayerRocket implements KeyReleaseListener {
 
         moveHistory.clear();
 
-        rocketFacing = Direction.NONE;
+        rocketFacing = Direction.DOWN;
+        speedY = -speed;
+
+        bodyX = x;
+        bodyY = y - dragonTailImgHeight;
+        bodyDirection = Direction.DOWN;
     }
     
     public enum Direction{
@@ -266,8 +286,47 @@ public class PlayerRocket implements KeyReleaseListener {
         x += speedX;
         y += speedY;
 
-        //Move the tail:
-        //TODO
+        if(moveHistory.size() > 0)
+        {
+            //Move the tail:
+            switch(bodyDirection)
+            {
+                case UP:
+                    if(bodyY <= moveHistory.peek().y)
+                        bodyDirection = moveHistory.remove().direction;
+                    else
+                        bodySpeedY = -speed;
+                    break;
+                case DOWN:
+                    if(bodyY >= moveHistory.peek().y)
+                        bodyDirection = moveHistory.remove().direction;
+                    else
+                        bodySpeedY = speed;
+                    break;
+                case LEFT:
+                    if(bodyX <= moveHistory.peek().x)
+                        bodyDirection = moveHistory.remove().direction;
+                    else
+                        bodySpeedX = -speed;
+                    break;
+                case RIGHT:
+                    if(bodyX >= moveHistory.peek().x)
+                        bodyDirection = moveHistory.remove().direction;
+                    else
+                        bodySpeedX = speed;
+                    break;
+                default:
+                    bodySpeedX = speedX;
+                    bodySpeedY = speedY;
+            }
+
+        }else
+        {
+            bodySpeedX = speedX;
+            bodySpeedY = speedY;
+        }
+        bodyX += bodySpeedX;
+        bodyY += bodySpeedY;
     }
     
     private BufferedImage rocketPlaceholder;
@@ -282,6 +341,18 @@ public class PlayerRocket implements KeyReleaseListener {
         g2d.setColor(Color.white);
         g2d.setFont(coordinateFont); 
         g2d.drawString("# moves: " + moveHistory.size(), 25, 25);
+        Iterator <MoveNode> it = moveHistory.iterator();
+        MoveNode temp;
+        for(int i = 0; i < moveHistory.size(); i++)
+        {
+            temp = it.next();
+            g2d.drawString(temp.direction + " at " + temp.x + ", " + 
+                temp.y, 25, 50+25*i);
+        }
+        
+        g2d.drawString("tail: ", Framework.frameWidth/2, 25);
+        g2d.drawString(bodyDirection + ": " + bodyX + ", " + 
+                bodyY, Framework.frameWidth/2, 50);
         
         // If the rocket is landed.
         if(landed)
@@ -329,6 +400,9 @@ public class PlayerRocket implements KeyReleaseListener {
                     x_fire = x + (rocketImgWidth - rocketFireImgWidth)/2;
                     y_fire = y + rocketImgHeight- rocketFireImgHeight/overlapFractionInverted;
             }
+
+            g2d.drawImage(dragonTailImg, bodyX, bodyY, null);
+
              // draw rocket fire 
             if(FireWasTriggered)
             {
