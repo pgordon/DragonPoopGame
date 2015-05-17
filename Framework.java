@@ -355,6 +355,8 @@ public class Framework extends Canvas {
             case GAMEOVER:
                 if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER)
                     restartGame();
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    gameState = GameState.OPTIONS;
                 break;
         }
     }
