@@ -35,7 +35,9 @@ public class Game {
 
     private List <PowerUp> powerUps;
     private Iterator <PowerUp> powerUpIterator;
-    private int numPowerUps;
+    private Iterator <Enemy> enemyIterator;
+    private int numPowerUps = 5;
+    private int numEnemies = 3;
     
     private Iterator<Projectile> it;
 
@@ -55,6 +57,7 @@ public class Game {
     private Audio audioInstance;
     
     private Font gameInstructionFont;
+    private Font coordinateFont;
 
     public Game()
     {
@@ -84,12 +87,13 @@ public class Game {
         playerRocket = new PlayerRocket();
         landingArea  = new LandingArea();
         powerUps = new LinkedList<PowerUp>();
-        numPowerUps = 5;
         PopulatePowerUps();
+        InitEnemies();
 
         audioInstance = Audio.getInstance();
 
         gameInstructionFont = new Font("TimesRoman", Font.PLAIN, 12);
+        coordinateFont = new Font(Font.SANS_SERIF, Font.PLAIN, 30);
     }
     
     private void PopulatePowerUps()
@@ -97,6 +101,14 @@ public class Game {
         for(int i = 0; i < numPowerUps; i++)
         {
             powerUps.add(new PowerUp());
+        }
+    }
+
+    private void InitEnemies()
+    {
+        for(int i = 0; i < numEnemies; i++)
+        {
+            new Enemy();
         }
     }
 
@@ -127,10 +139,13 @@ public class Game {
         playerRocket.ResetPlayer();
         powerUps.clear();
         PopulatePowerUps();
+        Enemy.Exterminate();
+        InitEnemies();
         audioInstance.GameRestarted();
     }
     
     Projectile temp;
+    Enemy tempEnemy;
     /**
      * Update game logic.
      * 
@@ -152,6 +167,28 @@ public class Game {
 
         // Move the rocket
         playerRocket.Update();
+
+        // Enemy Update
+        enemyIterator = Enemy.s_Enemies.iterator();
+        while(enemyIterator.hasNext())
+        {
+            tempEnemy = enemyIterator.next();
+
+            //TODO: check body segments too, for endgame trigger
+            if(tempEnemy.isTouching(playerRocket.x, playerRocket.y, 
+                playerRocket.rocketImgWidth, playerRocket.rocketImgHeight))
+            {
+                //TODO: little animation? 
+                audioInstance.PlaySound(Audio.SituationForSound.POWER_UP);
+                enemyIterator.remove();
+
+                playerRocket.incrementAmmo();
+            }
+            else
+            {
+                tempEnemy.Update(playerRocket.x, playerRocket.y);
+            }
+        }        
         
         // Checks where the player rocket is. Is it still in the space or is it landed or crashed?
         //hitting the walls kills you; leaving in landing area behaviour to save or exit game
@@ -201,6 +238,16 @@ public class Game {
     {
         g2d.drawImage(backgroundImg, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
         
+        //DEBUG
+        g2d.setColor(Color.white);
+        g2d.setFont(coordinateFont); 
+        g2d.drawString("# enemies: " + Enemy.s_Enemies.size(), 25, 25);
+        for(int i = 0; i < Enemy.s_Enemies.size(); i++)
+        {
+            g2d.drawString(i + " at " + Enemy.s_Enemies.get(i).x + ", " + 
+                Enemy.s_Enemies.get(i).y, 25, 50+25*i);
+        }
+
         landingArea.Draw(g2d);
         
         playerRocket.Draw(g2d);
@@ -214,6 +261,12 @@ public class Game {
         while(it.hasNext())
         {
             it.next().Draw(g2d);
+        }
+
+        enemyIterator = Enemy.s_Enemies.iterator();
+        while(enemyIterator.hasNext())
+        {
+            enemyIterator.next().Draw(g2d);
         }
     }
     

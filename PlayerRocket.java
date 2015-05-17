@@ -86,8 +86,6 @@ public class PlayerRocket implements KeyReleaseListener {
     private BufferedImage rocketFireImgRight;
     private BufferedImage rocketFireImgLeft;
 
-    private Font coordinateFont;
-
     private int rocketStartingY;
     
     /**
@@ -131,8 +129,6 @@ public class PlayerRocket implements KeyReleaseListener {
 
         // 1/overlapFractionInverted is multiplied by the projectile image height
         overlapFractionInverted = 4; 
-
-        coordinateFont = new Font(Font.SANS_SERIF, Font.PLAIN, 30);
 
         audioInstance = Audio.getInstance();
 
@@ -340,16 +336,7 @@ public class PlayerRocket implements KeyReleaseListener {
     private boolean FireWasTriggered = false;
 
     public void Draw(Graphics2D g2d)
-    {
-        g2d.setColor(Color.white);
-        g2d.setFont(coordinateFont); 
-        g2d.drawString("# segments: " + segments, 25, 25);
-        for(int i = 0; i < dragonBody.size(); i++)
-        {
-            g2d.drawString(i + " at " + dragonBody.get(i).x + ", " + 
-                dragonBody.get(i).y, 25, 50+25*i);
-        }
-        
+    {        
         // If the rocket is landed.
         if(landed)
         {

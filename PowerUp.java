@@ -28,7 +28,7 @@ public class PowerUp {
     public int powerUpImgWidth;
     public int powerUpImgHeight;
 
-    private Animation animation;
+    protected Animation animation;
     private long frameTime = 40; //24 frames a second
     private long delay = 500; //one second in ms
     private int numAnimFrames = 12;
